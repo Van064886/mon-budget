@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mon_budget/core/configs/app_providers.dart';
 import 'package:mon_budget/core/configs/app_routes.dart';
 import 'package:mon_budget/core/configs/app_theme.dart';
-import 'package:mon_budget/views/home_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(providers: AppProviders.providers, child: const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'Mon Budget',
       theme: AppTheme.lightTheme,
       routes: AppRoutes.routes,
-      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

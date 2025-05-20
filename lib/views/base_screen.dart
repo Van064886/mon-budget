@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:mon_budget/core/constants/app_constants.dart';
+import 'package:mon_budget/views/dashboard/dashboard_screen.dart';
 import 'package:mon_budget/views/home_screen.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -14,7 +15,7 @@ class _BaseScreenState extends State<BaseScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = const [
-    HomeScreen(),
+    DashboardScreen(),
     HomeScreen(),
     HomeScreen(),
     HomeScreen(),

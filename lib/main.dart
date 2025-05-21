@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mon_budget/core/configs/app_providers.dart';
 import 'package:mon_budget/core/configs/app_routes.dart';
 import 'package:mon_budget/core/configs/app_theme.dart';
 import 'package:mon_budget/services/budget_service.dart';
@@ -17,7 +16,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      // providers: AppProviders.providers,
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeService()),
         ChangeNotifierProvider(create: (_) => BudgetService()),

@@ -3,7 +3,7 @@ import 'package:mon_budget/core/database/database_helper.dart';
 import 'package:mon_budget/models/expense_category.dart';
 
 class CategoryService extends ChangeNotifier {
-  final List<ExpenseCategory> _categories = [];
+  List<ExpenseCategory> _categories = [];
   final dbHelper = DatabaseHelper();
 
   List<ExpenseCategory> get categories => _categories;
@@ -35,13 +35,18 @@ class CategoryService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Optional: Seed with fake data
+  // Seed DB with fake data
   Future<void> insertFakeCategories() async {
     final db = await dbHelper.db;
     for (final cat in ExpenseCategory.defaultCategories) {
       await db.insert('categories', cat.toMap());
     }
     await fetchCategories();
+  }
+
+  // Fill list with fake data
+  Future<void> addFakeCategories() async {
+    _categories = ExpenseCategory.defaultCategories;
   }
 
   // Clear all categories (if needed)

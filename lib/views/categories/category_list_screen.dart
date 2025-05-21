@@ -1,5 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:mon_budget/core/constants/app_constants.dart';
+import 'package:mon_budget/models/expense_category.dart';
 import 'package:mon_budget/services/category_service.dart';
 import 'package:provider/provider.dart';
 
@@ -91,12 +95,83 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/categories/new');
+              showAddCategoryDialog(context);
             },
             child: const Icon(Icons.add),
           ),
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    CategoryService categoryService = Provider.of(context, listen: false);
+    categoryService.addFakeCategories();
+  }
+
+  void showAddCategoryDialog(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    final TextEditingController _nameController = TextEditingController();
+    CategoryService categoryService = Provider.of(context, listen: false);
+
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: const Text(
+                'Ajouter une catégorie',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              content: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nom de la catégorie',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Veuillez entrer un nom valide';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  style: ButtonStyle(
+                    foregroundColor: WidgetStatePropertyAll(Colors.black),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Annuler'),
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      AppConstants.mainColor,
+                    ),
+                    foregroundColor: WidgetStatePropertyAll(Colors.white),
+                  ),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      final newCategory = ExpenseCategory(
+                        name: _nameController.text.trim(),
+                      );
+
+                      await categoryService.addExpenseCategory(newCategory);
+
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text('Ajouter'),
+                ),
+              ],
+            ),
+      );
+    }
   }
 }

@@ -22,6 +22,7 @@ dependencies:
   # awesome_notifications: ^0.8.2
   heroicons: ^0.11.0
   pie_chart: ^5.4.0
+  path: ^1.9.1
 
 dev_dependencies:
   flutter_test:

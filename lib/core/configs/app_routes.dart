@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mon_budget/views/base_screen.dart';
+import 'package:mon_budget/views/categories/category_list_screen.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -11,7 +12,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> get routes => {
     home: (context) => BaseScreen(),
-    // categories: (context) => CategoryListPage(),
+    categories: (context) => CategoryListScreen(),
     // budgets: (context) => BudgetListPage(),
     // expenses: (context) => ExpenseListPage(),
     // incomes: (context) => IncomeListPage(),

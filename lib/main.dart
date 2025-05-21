@@ -5,9 +5,7 @@ import 'package:mon_budget/core/configs/app_theme.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-    MultiProvider(providers: AppProviders.providers, child: const MyApp()),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,11 +13,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Mon Budget',
-      theme: AppTheme.lightTheme,
-      routes: AppRoutes.routes,
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: AppProviders.providers,
+      child: MaterialApp(
+        title: 'Mon Budget',
+        theme: AppTheme.lightTheme,
+        routes: AppRoutes.routes,
+        initialRoute: '/',
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

@@ -6,10 +6,11 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       fontFamily: "Poppins",
-      // primarySwatch: AppConstants.mainColor,
       scaffoldBackgroundColor: AppConstants.primaryColor,
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppConstants.mainColor,
+        foregroundColor: Colors.white,
+        shape: CircleBorder(),
       ),
 
       appBarTheme: const AppBarTheme(

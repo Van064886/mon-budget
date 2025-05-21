@@ -5,6 +5,7 @@ import 'package:mon_budget/services/budget_service.dart';
 import 'package:mon_budget/services/category_service.dart';
 import 'package:mon_budget/services/theme_service.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,18 +16,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeService()),
-        ChangeNotifierProvider(create: (_) => BudgetService()),
-        ChangeNotifierProvider(create: (_) => CategoryService()),
-      ],
-      child: MaterialApp(
-        title: 'Mon Budget',
-        theme: AppTheme.lightTheme,
-        routes: AppRoutes.routes,
-        initialRoute: '/',
-        debugShowCheckedModeBanner: false,
+    return ToastificationWrapper(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ThemeService()),
+          ChangeNotifierProvider(create: (_) => BudgetService()),
+          ChangeNotifierProvider(create: (_) => CategoryService()),
+        ],
+        child: MaterialApp(
+          title: 'Mon Budget',
+          theme: AppTheme.lightTheme,
+          routes: AppRoutes.routes,
+          initialRoute: '/',
+          debugShowCheckedModeBanner: false,
+        ),
       ),
     );
   }

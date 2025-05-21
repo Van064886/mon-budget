@@ -111,6 +111,25 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     categoryService.addFakeCategories();
   }
 
+  void checkIfCategoryExists(String category) {
+    CategoryService categoryService = Provider.of(context, listen: false);
+
+    final alreadyExists = categoryService.categories.any(
+      (cat) => cat.name.toLowerCase() == category.toLowerCase(),
+    );
+
+    if (alreadyExists) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('La catégorie "$category" existe déjà !'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+  }
+
   void showAddCategoryDialog(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
     final TextEditingController _nameController = TextEditingController();

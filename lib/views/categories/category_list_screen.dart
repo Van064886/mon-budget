@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:heroicons/heroicons.dart';
 import 'package:mon_budget/core/constants/app_constants.dart';
 import 'package:mon_budget/core/utils/app_notifier.dart';
 import 'package:mon_budget/models/expense_category.dart';

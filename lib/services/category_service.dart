@@ -3,7 +3,7 @@ import 'package:mon_budget/core/database/database_helper.dart';
 import 'package:mon_budget/models/expense_category.dart';
 
 class CategoryService extends ChangeNotifier {
-  List<ExpenseCategory> _categories = [];
+  final List<ExpenseCategory> _categories = [];
   final dbHelper = DatabaseHelper();
 
   List<ExpenseCategory> get categories => _categories;
@@ -21,9 +21,9 @@ class CategoryService extends ChangeNotifier {
   }
 
   // Insert new ExpenseCategory
-  Future<void> addExpenseCategory(ExpenseCategory ExpenseCategory) async {
+  Future<void> addExpenseCategory(ExpenseCategory expenseCategory) async {
     final db = await dbHelper.db;
-    await db.insert('categories', ExpenseCategory.toMap());
+    await db.insert('categories', expenseCategory.toMap());
     await fetchCategories();
   }
 

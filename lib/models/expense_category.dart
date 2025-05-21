@@ -16,15 +16,4 @@ class ExpenseCategory {
 
   @override
   String toString() => 'ExpenseCategory(id: $id, name: $name)';
-
-  // Faker data
-  static List<ExpenseCategory> defaultCategories = [
-    ExpenseCategory(id: 1, name: 'Alimentation'),
-    ExpenseCategory(id: 2, name: 'Transport'),
-    ExpenseCategory(id: 3, name: 'Logement'),
-    ExpenseCategory(id: 4, name: 'Divertissement'),
-    ExpenseCategory(id: 5, name: 'Santé'),
-    ExpenseCategory(id: 6, name: 'Éducation'),
-    ExpenseCategory(id: 7, name: 'Abonnements'),
-  ];
 }

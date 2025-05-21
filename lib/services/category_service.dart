@@ -9,7 +9,7 @@ class CategoryService extends BaseService {
   // Fetch all categories from DB
   Future<void> fetchCategories() async {
     setIsLoading(true);
-    
+
     final db = await dbHelper.db;
     final List<Map<String, dynamic>> result = await db.query('categories');
 
@@ -33,15 +33,6 @@ class CategoryService extends BaseService {
     await db.delete('categories', where: 'id = ?', whereArgs: [id]);
     _categories.removeWhere((c) => c.id == id);
     notifyListeners();
-  }
-
-  // Seed DB with fake data
-  Future<void> insertFakeCategories() async {
-    final db = await dbHelper.db;
-    for (final cat in ExpenseCategory.defaultCategories) {
-      await db.insert('categories', cat.toMap());
-    }
-    await fetchCategories();
   }
 
   // Clear all categories

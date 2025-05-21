@@ -9,14 +9,14 @@ import 'package:mon_budget/services/category_service.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 
-class CategoryListScreen extends StatefulWidget {
-  const CategoryListScreen({super.key});
+class IncomeListScreen extends StatefulWidget {
+  const IncomeListScreen({super.key});
 
   @override
-  State<CategoryListScreen> createState() => _CategoryListScreenState();
+  State<IncomeListScreen> createState() => _IncomeListScreenState();
 }
 
-class _CategoryListScreenState extends State<CategoryListScreen> {
+class _IncomeListScreenState extends State<IncomeListScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<CategoryService>(
@@ -26,7 +26,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              "Catégories de dépenses",
+              "Revenus",
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
           ),
@@ -117,7 +117,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     categoryService.fetchCategories();
   }
 
-  bool categoryAlreadyExists(String category) {
+  void checkIfCategoryExists(String category) {
     CategoryService categoryService = Provider.of(context, listen: false);
 
     final alreadyExists = categoryService.categories.any(
@@ -125,15 +125,14 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     );
 
     if (alreadyExists) {
+      Navigator.pop(context);
       AppNotifier.show(
         context,
         type: ToastificationType.warning,
         message: "La catégorie $category existe déjà !",
       );
-      return true;
+      return;
     }
-
-    return false;
   }
 
   void showAddCategoryDialog(BuildContext context) {
@@ -182,19 +181,18 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                     foregroundColor: WidgetStatePropertyAll(Colors.white),
                   ),
                   onPressed: () async {
-                    String categoryName = _nameController.text.trim();
                     if (_formKey.currentState!.validate()) {
-                      final newCategory = ExpenseCategory(name: categoryName);
+                      final newCategory = ExpenseCategory(
+                        name: _nameController.text.trim(),
+                      );
 
-                      if (!categoryAlreadyExists(categoryName)) {
-                        await categoryService.addExpenseCategory(newCategory);
+                      await categoryService.addExpenseCategory(newCategory);
 
-                        AppNotifier.show(
-                          context,
-                          type: ToastificationType.success,
-                          message: "Catégorie ajoutée avec succès !",
-                        );
-                      }
+                      AppNotifier.show(
+                        context,
+                        type: ToastificationType.success,
+                        message: "Catégorie ajoutée avec succès !",
+                      );
 
                       Navigator.pop(context);
                     }

@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mon_budget/core/constants/app_constants.dart';
+import 'package:mon_budget/core/utils/app_notifier.dart';
 import 'package:mon_budget/models/expense_category.dart';
 import 'package:mon_budget/services/category_service.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 
 class CategoryListScreen extends StatefulWidget {
   const CategoryListScreen({super.key});
@@ -108,7 +110,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
   void initState() {
     super.initState();
     CategoryService categoryService = Provider.of(context, listen: false);
-    categoryService.addFakeCategories();
+    categoryService.fetchCategories();
   }
 
   void checkIfCategoryExists(String category) {
@@ -120,11 +122,10 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
 
     if (alreadyExists) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('La catégorie "$category" existe déjà !'),
-          backgroundColor: Colors.orange,
-        ),
+      AppNotifier.show(
+        context,
+        type: ToastificationType.warning,
+        message: "La catégorie $category existe déjà !",
       );
       return;
     }
@@ -182,6 +183,12 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                       );
 
                       await categoryService.addExpenseCategory(newCategory);
+
+                      AppNotifier.show(
+                        context,
+                        type: ToastificationType.success,
+                        message: "Carégorie ajoutée avec succès !",
+                      );
 
                       Navigator.pop(context);
                     }

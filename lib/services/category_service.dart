@@ -15,7 +15,7 @@ class CategoryService extends ChangeNotifier {
 
     _categories
       ..clear()
-      ..addAll(result.map((e) => ExpenseCategory.fromMap(e)).toList());
+      ..addAll(result.map((e) => ExpenseCategory.fromMap(e)).toList().reversed);
 
     notifyListeners();
   }
@@ -42,11 +42,6 @@ class CategoryService extends ChangeNotifier {
       await db.insert('categories', cat.toMap());
     }
     await fetchCategories();
-  }
-
-  // Fill list with fake data
-  Future<void> addFakeCategories() async {
-    _categories = ExpenseCategory.defaultCategories;
   }
 
   // Clear all categories (if needed)

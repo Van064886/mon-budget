@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:heroicons/heroicons.dart';
 import 'package:mon_budget/core/constants/app_constants.dart';
 import 'package:mon_budget/core/utils/app_notifier.dart';
 import 'package:mon_budget/models/expense_category.dart';
@@ -37,7 +38,13 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
               await categoryService.fetchCategories();
             },
             child:
-                categories.isEmpty
+                categoryService.isLoading
+                    ? Center(
+                      child: CircularProgressIndicator(
+                        color: AppConstants.mainColor,
+                      ),
+                    )
+                    : categories.isEmpty
                     ? ListView(
                       children: [
                         SizedBox(height: 400),
@@ -60,12 +67,12 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                                   categoryService.deleteExpenseCategory(
                                     category.id!,
                                   );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Catégorie "${category.name}" supprimée',
-                                      ),
-                                    ),
+
+                                  AppNotifier.show(
+                                    context,
+                                    type: ToastificationType.error,
+                                    message:
+                                        "Catégorie ${category.name} supprimée",
                                   );
                                 },
                                 backgroundColor: Colors.red,

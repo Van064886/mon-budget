@@ -1,15 +1,15 @@
-import 'package:flutter/foundation.dart';
-import 'package:mon_budget/core/database/database_helper.dart';
 import 'package:mon_budget/models/expense_category.dart';
+import 'package:mon_budget/services/base_service.dart';
 
-class CategoryService extends ChangeNotifier {
+class CategoryService extends BaseService {
   final List<ExpenseCategory> _categories = [];
-  final dbHelper = DatabaseHelper();
 
   List<ExpenseCategory> get categories => _categories;
 
   // Fetch all categories from DB
   Future<void> fetchCategories() async {
+    setIsLoading(true);
+    
     final db = await dbHelper.db;
     final List<Map<String, dynamic>> result = await db.query('categories');
 
@@ -17,7 +17,7 @@ class CategoryService extends ChangeNotifier {
       ..clear()
       ..addAll(result.map((e) => ExpenseCategory.fromMap(e)).toList().reversed);
 
-    notifyListeners();
+    setIsLoading(false);
   }
 
   // Insert new ExpenseCategory
@@ -44,7 +44,7 @@ class CategoryService extends ChangeNotifier {
     await fetchCategories();
   }
 
-  // Clear all categories (if needed)
+  // Clear all categories
   Future<void> clearCategories() async {
     final db = await dbHelper.db;
     await db.delete('categories');

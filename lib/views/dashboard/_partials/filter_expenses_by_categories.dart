@@ -28,7 +28,6 @@ class _FilterExpensesByCategoriesState
   @override
   void initState() {
     super.initState();
-    // Charge les données au démarrage
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadInitialData();
     });

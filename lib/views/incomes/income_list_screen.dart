@@ -26,9 +26,7 @@ class _IncomeListPageState extends State<IncomeListScreen> {
     Provider.of<IncomeService>(context, listen: false).fetchIncomes();
 
     final now = DateTime.now();
-    // Début du mois courant (1er jour)
     startDate = DateTime(now.year, now.month, 1);
-    // Date actuelle comme fin de période
     endDate = now;
   }
 

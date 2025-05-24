@@ -183,7 +183,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               ),
               const SizedBox(height: 30),
 
-              // Bouton Enregistrer
+              // Save button
               ElevatedButton.icon(
                 onPressed: _submit,
                 icon: const Icon(Icons.save, color: Colors.white),

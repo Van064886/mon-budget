@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:heroicons/heroicons.dart';
+import 'package:mon_budget/services/expense_service.dart';
+import 'package:mon_budget/services/income_service.dart';
+import 'package:provider/provider.dart';
 
 class MonthlySummary extends StatefulWidget {
   const MonthlySummary({super.key});
@@ -9,11 +12,47 @@ class MonthlySummary extends StatefulWidget {
 }
 
 class _MonthlySummaryState extends State<MonthlySummary> {
-  final double totalRevenus = 4500;
-  final double totalDepenses = 2800;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadInitialData();
+    });
+  }
+
+  Future<void> _loadInitialData() async {
+    final incomeService = Provider.of<IncomeService>(context, listen: false);
+    final expenseService = Provider.of<ExpenseService>(context, listen: false);
+
+    if (incomeService.incomes.isEmpty) await incomeService.fetchIncomes();
+    if (expenseService.expenses.isEmpty) await expenseService.fetchExpenses();
+
+    if (mounted) setState(() {});
+  }
+
+  double _calculateMonthlyTotal(List<dynamic> items) {
+    final now = DateTime.now();
+    final firstDayOfMonth = DateTime(now.year, now.month, 1);
+    final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+
+    return items.fold(0.0, (sum, item) {
+      final itemDate = DateTime.tryParse(item.date);
+      if (itemDate != null &&
+          itemDate.isAfter(firstDayOfMonth.subtract(const Duration(days: 1))) &&
+          itemDate.isBefore(lastDayOfMonth.add(const Duration(days: 1)))) {
+        return sum + item.amount;
+      }
+      return sum;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final incomeService = Provider.of<IncomeService>(context);
+    final expenseService = Provider.of<ExpenseService>(context);
+
+    final totalRevenus = _calculateMonthlyTotal(incomeService.incomes);
+    final totalDepenses = _calculateMonthlyTotal(expenseService.expenses);
     final solde = totalRevenus - totalDepenses;
 
     return Column(
@@ -32,7 +71,7 @@ class _MonthlySummaryState extends State<MonthlySummary> {
                 Expanded(
                   child: _buildInfoCard(
                     "Revenus",
-                    "$totalRevenus FCFA",
+                    "${totalRevenus.toStringAsFixed(0)} FCFA",
                     HeroIcons.arrowTrendingUp,
                     Colors.green,
                   ),
@@ -40,7 +79,7 @@ class _MonthlySummaryState extends State<MonthlySummary> {
                 Expanded(
                   child: _buildInfoCard(
                     "Dépenses",
-                    "$totalDepenses FCFA",
+                    "${totalDepenses.toStringAsFixed(0)} FCFA",
                     HeroIcons.arrowTrendingDown,
                     Colors.red,
                   ),
@@ -49,10 +88,9 @@ class _MonthlySummaryState extends State<MonthlySummary> {
             ),
             _buildInfoCard(
               "Solde actuel",
-              "${solde >= 0 ? "" : "-"}${solde.abs().toStringAsFixed(2)} FCFA",
+              "${solde >= 0 ? "" : "-"}${solde.abs().toStringAsFixed(0)} FCFA",
               HeroIcons.banknotes,
-              Colors.amber,
-              // isMain: true,
+              solde >= 0 ? Colors.green : Colors.red,
             ),
           ],
         ),
@@ -68,9 +106,10 @@ class _MonthlySummaryState extends State<MonthlySummary> {
     bool isMain = false,
   }) {
     return Card(
+      margin: const EdgeInsets.only(bottom: 8),
       color: Colors.white,
       borderOnForeground: true,
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: Row(
           mainAxisAlignment:
@@ -98,7 +137,7 @@ class _MonthlySummaryState extends State<MonthlySummary> {
                 Text(
                   value,
                   style: TextStyle(
-                    fontSize: isMain ? 25 : 10,
+                    fontSize: isMain ? 25 : 11,
                     fontWeight: FontWeight.w700,
                     overflow: TextOverflow.ellipsis,
                   ),

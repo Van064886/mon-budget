@@ -67,7 +67,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
 
                                   AppNotifier.show(
                                     context,
-                                    type: ToastificationType.error,
+                                    type: ToastificationType.success,
                                     message:
                                         "Catégorie ${category.name} supprimée",
                                   );

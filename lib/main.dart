@@ -3,6 +3,7 @@ import 'package:mon_budget/core/configs/app_routes.dart';
 import 'package:mon_budget/core/configs/app_theme.dart';
 import 'package:mon_budget/services/budget_service.dart';
 import 'package:mon_budget/services/category_service.dart';
+import 'package:mon_budget/services/expense_service.dart';
 import 'package:mon_budget/services/income_service.dart';
 import 'package:mon_budget/services/theme_service.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => BudgetService()),
           ChangeNotifierProvider(create: (_) => IncomeService()),
+          ChangeNotifierProvider(create: (_) => ExpenseService()),
           ChangeNotifierProvider(create: (_) => CategoryService()),
         ],
         child: MaterialApp(

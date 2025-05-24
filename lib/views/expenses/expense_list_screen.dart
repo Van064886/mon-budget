@@ -2,28 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:intl/intl.dart';
-import 'package:mon_budget/core/constants/app_constants.dart';
 import 'package:mon_budget/core/utils/app_notifier.dart';
+import 'package:mon_budget/services/expense_service.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
+import '../../core/constants/app_constants.dart';
 
-import '../../services/income_service.dart';
-
-class IncomeListScreen extends StatefulWidget {
-  const IncomeListScreen({super.key});
+class ExpenseListScreen extends StatefulWidget {
+  const ExpenseListScreen({super.key});
 
   @override
-  State<IncomeListScreen> createState() => _IncomeListPageState();
+  State<ExpenseListScreen> createState() => _ExpenseListScreenState();
 }
 
-class _IncomeListPageState extends State<IncomeListScreen> {
+class _ExpenseListScreenState extends State<ExpenseListScreen> {
   DateTime? startDate;
   DateTime? endDate;
 
   @override
   void initState() {
     super.initState();
-    Provider.of<IncomeService>(context, listen: false).fetchIncomes();
+    Provider.of<ExpenseService>(context, listen: false).fetchExpenses();
 
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
@@ -43,16 +42,16 @@ class _IncomeListPageState extends State<IncomeListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final incomeService = Provider.of<IncomeService>(context);
-    final allIncomes = incomeService.incomes;
+    final expenseService = Provider.of<ExpenseService>(context);
+    final allExpenses = expenseService.expenses;
 
-    final filteredIncomes =
-        allIncomes.where((i) => isWithinPeriod(i.date)).toList();
+    final filteredExpenses =
+        allExpenses.where((e) => isWithinPeriod(e.date)).toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Mes Revenus",
+          "Mes Dépenses",
           style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
         ),
       ),
@@ -77,7 +76,7 @@ class _IncomeListPageState extends State<IncomeListScreen> {
                     }
                   },
                   icon: HeroIcon(
-                    HeroIcons.calendarDateRange,
+                    HeroIcons.calendar,
                     size: 15,
                     color: AppConstants.mainColor,
                   ),
@@ -105,7 +104,7 @@ class _IncomeListPageState extends State<IncomeListScreen> {
                     }
                   },
                   icon: HeroIcon(
-                    HeroIcons.calendarDateRange,
+                    HeroIcons.calendar,
                     size: 15,
                     color: AppConstants.mainColor,
                   ),
@@ -126,37 +125,37 @@ class _IncomeListPageState extends State<IncomeListScreen> {
 
           Expanded(
             child: RefreshIndicator(
-              onRefresh: () => incomeService.fetchIncomes(),
+              onRefresh: () => expenseService.fetchExpenses(),
               child:
-                  filteredIncomes.isEmpty
+                  filteredExpenses.isEmpty
                       ? ListView(
-                        children: [
+                        children: const [
                           SizedBox(height: 300),
                           Center(
-                            child: Text("Aucun revenu pour cette période."),
+                            child: Text("Aucune dépense pour cette période."),
                           ),
                         ],
                       )
                       : ListView.builder(
                         physics: const AlwaysScrollableScrollPhysics(),
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        itemCount: filteredIncomes.length,
+                        itemCount: filteredExpenses.length,
                         itemBuilder: (context, index) {
-                          final income = filteredIncomes[index];
+                          final expense = filteredExpenses[index];
 
                           return Slidable(
-                            key: ValueKey(income.id),
+                            key: ValueKey(expense.id),
                             endActionPane: ActionPane(
                               motion: const DrawerMotion(),
                               children: [
                                 SlidableAction(
                                   onPressed: (_) {
-                                    incomeService.deleteIncome(income.id!);
+                                    expenseService.deleteExpense(expense.id!);
                                     AppNotifier.show(
                                       context,
-                                      type: ToastificationType.success,
                                       message:
-                                          'Revenu "${income.label}" supprimé',
+                                          'Dépense "${expense.label}" supprimée',
+                                      type: ToastificationType.success,
                                     );
                                   },
                                   backgroundColor: Colors.red,
@@ -173,19 +172,19 @@ class _IncomeListPageState extends State<IncomeListScreen> {
                               elevation: 3,
                               child: ListTile(
                                 leading: CircleAvatar(
-                                  backgroundColor: Colors.green.shade100,
+                                  backgroundColor: Colors.red.shade100,
                                   child: const Icon(
-                                    Icons.attach_money,
-                                    color: Colors.green,
+                                    Icons.money_off,
+                                    color: Colors.red,
                                   ),
                                 ),
-                                title: Text(income.label),
-                                subtitle: Text(income.date),
+                                title: Text(expense.label),
+                                subtitle: Text(expense.date),
                                 trailing: Text(
-                                  "+ ${income.amount.toStringAsFixed(2)} FCFA",
+                                  "- ${expense.amount.toStringAsFixed(2)} FCFA",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.green,
+                                    color: Colors.red,
                                   ),
                                 ),
                               ),
@@ -199,7 +198,7 @@ class _IncomeListPageState extends State<IncomeListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/incomes/new');
+          Navigator.pushNamed(context, '/expenses/new');
         },
         child: const Icon(Icons.add),
       ),

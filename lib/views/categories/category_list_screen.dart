@@ -86,7 +86,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                                       context,
                                       type: ToastificationType.error,
                                       message:
-                                          "Impossible de supprimer une catégorie utilisée dans des dépenses",
+                                          "Impossible ! Catégorie associée à des dépenses",
                                     );
                                   }
                                 },

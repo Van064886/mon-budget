@@ -137,8 +137,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
   }
 
   void showAddCategoryDialog(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    final TextEditingController _nameController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    final TextEditingController nameController = TextEditingController();
     CategoryService categoryService = Provider.of(context, listen: false);
 
     if (context.mounted) {
@@ -151,9 +151,9 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
               content: Form(
-                key: _formKey,
+                key: formKey,
                 child: TextFormField(
-                  controller: _nameController,
+                  controller: nameController,
                   decoration: const InputDecoration(
                     labelText: 'Nom de la catégorie',
                     border: OutlineInputBorder(),
@@ -182,8 +182,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                     foregroundColor: WidgetStatePropertyAll(Colors.white),
                   ),
                   onPressed: () async {
-                    String categoryName = _nameController.text.trim();
-                    if (_formKey.currentState!.validate()) {
+                    String categoryName = nameController.text.trim();
+                    if (formKey.currentState!.validate()) {
                       final newCategory = ExpenseCategory(name: categoryName);
 
                       if (!categoryAlreadyExists(categoryName)) {

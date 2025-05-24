@@ -4,6 +4,7 @@ import 'package:mon_budget/core/constants/app_constants.dart';
 import 'package:mon_budget/views/categories/category_list_screen.dart';
 import 'package:mon_budget/views/dashboard/dashboard_screen.dart';
 import 'package:mon_budget/views/home_screen.dart';
+import 'package:mon_budget/views/incomes/income_list_screen.dart';
 
 class BaseScreen extends StatefulWidget {
   const BaseScreen({super.key});
@@ -18,8 +19,9 @@ class _BaseScreenState extends State<BaseScreen> {
   final List<Widget> _pages = const [
     DashboardScreen(),
     CategoryListScreen(),
+    CategoryListScreen(),
     HomeScreen(),
-    HomeScreen(),
+    IncomeListScreen(),
   ];
 
   void _onItemTapped(int index) {

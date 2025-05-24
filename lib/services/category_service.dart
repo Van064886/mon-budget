@@ -1,5 +1,6 @@
 import 'package:mon_budget/models/expense_category.dart';
 import 'package:mon_budget/services/base_service.dart';
+import 'package:mon_budget/services/expense_service.dart';
 
 class CategoryService extends BaseService {
   final List<ExpenseCategory> _categories = [];
@@ -27,12 +28,34 @@ class CategoryService extends BaseService {
     await fetchCategories();
   }
 
+  // Check if category is used
+  Future<bool> _isCategoryUsed(
+    int categoryId,
+    ExpenseService expenseService,
+  ) async {
+    await expenseService.fetchExpenses();
+
+    return expenseService.expenses.any(
+      (expense) => expense.categoryId == categoryId,
+    );
+  }
+
   // Delete ExpenseCategory by id
-  Future<void> deleteExpenseCategory(int id) async {
+  Future<bool> deleteExpenseCategory(
+    int id, {
+    required ExpenseService expenseService,
+  }) async {
+    final hasExpenses = await _isCategoryUsed(id, expenseService);
+
+    if (hasExpenses) {
+      return false;
+    }
+
     final db = await dbHelper.db;
     await db.delete('categories', where: 'id = ?', whereArgs: [id]);
     _categories.removeWhere((c) => c.id == id);
     notifyListeners();
+    return true;
   }
 
   // Clear all categories

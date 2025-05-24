@@ -6,6 +6,7 @@ import 'package:mon_budget/core/constants/app_constants.dart';
 import 'package:mon_budget/core/utils/app_notifier.dart';
 import 'package:mon_budget/models/expense_category.dart';
 import 'package:mon_budget/services/category_service.dart';
+import 'package:mon_budget/services/expense_service.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 
@@ -60,17 +61,34 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                             motion: const DrawerMotion(),
                             children: [
                               SlidableAction(
-                                onPressed: (_) {
-                                  categoryService.deleteExpenseCategory(
-                                    category.id!,
-                                  );
+                                onPressed: (_) async {
+                                  final expenseService =
+                                      Provider.of<ExpenseService>(
+                                        context,
+                                        listen: false,
+                                      );
 
-                                  AppNotifier.show(
-                                    context,
-                                    type: ToastificationType.success,
-                                    message:
-                                        "Catégorie ${category.name} supprimée",
-                                  );
+                                  final success = await categoryService
+                                      .deleteExpenseCategory(
+                                        category.id!,
+                                        expenseService: expenseService,
+                                      );
+
+                                  if (success) {
+                                    AppNotifier.show(
+                                      context,
+                                      type: ToastificationType.success,
+                                      message:
+                                          "Catégorie ${category.name} supprimée",
+                                    );
+                                  } else {
+                                    AppNotifier.show(
+                                      context,
+                                      type: ToastificationType.error,
+                                      message:
+                                          "Impossible de supprimer une catégorie utilisée dans des dépenses",
+                                    );
+                                  }
                                 },
                                 backgroundColor: Colors.red,
                                 foregroundColor: Colors.white,

@@ -67,6 +67,7 @@ class _MonthlySummaryState extends State<MonthlySummary> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              spacing: 8,
               children: [
                 Expanded(
                   child: _buildInfoCard(

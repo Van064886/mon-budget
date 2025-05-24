@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mon_budget/core/constants/app_constants.dart';
+import 'package:mon_budget/models/expense_category.dart';
+import 'package:mon_budget/services/budget_service.dart';
+import 'package:mon_budget/services/category_service.dart';
+import 'package:mon_budget/services/expense_service.dart';
+import 'package:provider/provider.dart';
 
 class BudgetVersusExpenses extends StatefulWidget {
   const BudgetVersusExpenses({super.key});
@@ -9,7 +15,64 @@ class BudgetVersusExpenses extends StatefulWidget {
 
 class _BudgetVersusExpensesState extends State<BudgetVersusExpenses> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadInitialData();
+    });
+  }
+
+  Future<void> _loadInitialData() async {
+    final budgetService = Provider.of<BudgetService>(context, listen: false);
+    final expenseService = Provider.of<ExpenseService>(context, listen: false);
+    final categoryService = Provider.of<CategoryService>(
+      context,
+      listen: false,
+    );
+
+    if (budgetService.budgets.isEmpty) await budgetService.fetchBudgets();
+    if (expenseService.expenses.isEmpty) await expenseService.fetchExpenses();
+    if (categoryService.categories.isEmpty) {
+      await categoryService.fetchCategories();
+    }
+
+    if (mounted) setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final budgetService = Provider.of<BudgetService>(context);
+    final expenseService = Provider.of<ExpenseService>(context);
+    final categoryService = Provider.of<CategoryService>(context);
+
+    final Map<int, double> expensesByCategory = {};
+    for (final expense in expenseService.expenses) {
+      expensesByCategory.update(
+        expense.categoryId,
+        (value) => value + expense.amount,
+        ifAbsent: () => expense.amount,
+      );
+    }
+
+    final List<BudgetVsExpense> data = [];
+    for (final budget in budgetService.budgets) {
+      final category = categoryService.categories.firstWhere(
+        (cat) => cat.id == budget.categoryId,
+        orElse: () => ExpenseCategory(id: -1, name: 'Inconnue'),
+      );
+
+      data.add(
+        BudgetVsExpense(
+          categoryName: category.name,
+          budgetAmount: budget.amount,
+          spentAmount: expensesByCategory[budget.categoryId] ?? 0,
+          color:
+              AppConstants.categoryColors[budget.categoryId %
+                  AppConstants.categoryColors.length],
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -20,9 +83,23 @@ class _BudgetVersusExpensesState extends State<BudgetVersusExpenses> {
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
           ),
         ),
-        _buildBudgetCard("Alimentation", 500, 300, Colors.teal),
-        _buildBudgetCard("Transport", 200, 150, Colors.orange),
-        _buildBudgetCard("Logement", 1000, 1000, Colors.blue),
+        if (data.isEmpty)
+          const Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: Text(
+              "Aucun budget défini",
+              style: TextStyle(color: Colors.grey),
+            ),
+          )
+        else
+          ...data.map(
+            (item) => _buildBudgetCard(
+              item.categoryName,
+              item.budgetAmount,
+              item.spentAmount,
+              item.color,
+            ),
+          ),
       ],
     );
   }
@@ -33,7 +110,7 @@ class _BudgetVersusExpensesState extends State<BudgetVersusExpenses> {
     double spent,
     Color color,
   ) {
-    final percent = (spent / budget).clamp(0.0, 1.0);
+    final percent = budget > 0 ? (spent / budget).clamp(0.0, 1.0) : 0.0;
     final percentText = (percent * 100).toStringAsFixed(0);
 
     return Card(
@@ -68,7 +145,7 @@ class _BudgetVersusExpensesState extends State<BudgetVersusExpenses> {
             ),
             const SizedBox(height: 6),
             Text(
-              "$spent / $budget FCFA",
+              "${spent.toStringAsFixed(0)} / ${budget.toStringAsFixed(0)} FCFA",
               style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ],
@@ -76,4 +153,18 @@ class _BudgetVersusExpensesState extends State<BudgetVersusExpenses> {
       ),
     );
   }
+}
+
+class BudgetVsExpense {
+  final String categoryName;
+  final double budgetAmount;
+  final double spentAmount;
+  final Color color;
+
+  BudgetVsExpense({
+    required this.categoryName,
+    required this.budgetAmount,
+    required this.spentAmount,
+    required this.color,
+  });
 }

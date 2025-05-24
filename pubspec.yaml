@@ -23,12 +23,31 @@ dependencies:
   pie_chart: ^5.4.0
   path: ^1.9.1
   toastification: ^3.0.2
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/icons/icon.png"
+    background_color: "#hexcode"
+    theme_color: "#989898"
+  windows:
+    generate: true
+    image_path: "assets/icons/icon.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/icons/icon.png"
 
 flutter:
   uses-material-design: true

@@ -3,6 +3,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:intl/intl.dart';
 import 'package:mon_budget/core/utils/app_notifier.dart';
+import 'package:mon_budget/models/expense_category.dart';
+import 'package:mon_budget/services/category_service.dart';
 import 'package:mon_budget/services/expense_service.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
@@ -22,7 +24,14 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ExpenseService>(context, listen: false).fetchExpenses();
+    final expenseService = Provider.of<ExpenseService>(context, listen: false);
+    final categoryService = Provider.of<CategoryService>(
+      context,
+      listen: false,
+    );
+
+    expenseService.fetchExpenses();
+    categoryService.fetchCategories();
 
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
@@ -43,10 +52,20 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
   @override
   Widget build(BuildContext context) {
     final expenseService = Provider.of<ExpenseService>(context);
+    final categoryService = Provider.of<CategoryService>(context);
     final allExpenses = expenseService.expenses;
+    final categories = categoryService.categories;
 
     final filteredExpenses =
         allExpenses.where((e) => isWithinPeriod(e.date)).toList();
+
+    String getCategoryName(int categoryId) {
+      final category = categories.firstWhere(
+        (cat) => cat.id == categoryId,
+        orElse: () => ExpenseCategory(name: 'Inconnue', id: -1),
+      );
+      return category.name;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -122,10 +141,12 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
               ],
             ),
           ),
-
           Expanded(
             child: RefreshIndicator(
-              onRefresh: () => expenseService.fetchExpenses(),
+              onRefresh: () async {
+                await expenseService.fetchExpenses();
+                await categoryService.fetchCategories();
+              },
               child:
                   filteredExpenses.isEmpty
                       ? ListView(
@@ -142,6 +163,9 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                         itemCount: filteredExpenses.length,
                         itemBuilder: (context, index) {
                           final expense = filteredExpenses[index];
+                          final categoryName = getCategoryName(
+                            expense.categoryId,
+                          );
 
                           return Slidable(
                             key: ValueKey(expense.id),
@@ -179,7 +203,19 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
                                   ),
                                 ),
                                 title: Text(expense.label),
-                                subtitle: Text(expense.date),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(expense.date),
+                                    Text(
+                                      'Catégorie: $categoryName',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 trailing: Text(
                                   "- ${expense.amount.toStringAsFixed(2)} FCFA",
                                   style: const TextStyle(

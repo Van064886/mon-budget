@@ -124,7 +124,7 @@ class _AddIncomeScreenState extends State<AddIncomeScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Note (facultatif)
+              // Note
               TextFormField(
                 controller: _noteController,
                 maxLines: 2,

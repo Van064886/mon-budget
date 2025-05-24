@@ -26,8 +26,9 @@ class _IncomeListPageState extends State<IncomeListScreen> {
     Provider.of<IncomeService>(context, listen: false).fetchIncomes();
 
     final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    startDate = startOfWeek;
+    // Début du mois courant (1er jour)
+    startDate = DateTime(now.year, now.month, 1);
+    // Date actuelle comme fin de période
     endDate = now;
   }
 
@@ -130,7 +131,7 @@ class _IncomeListPageState extends State<IncomeListScreen> {
               child:
                   filteredIncomes.isEmpty
                       ? ListView(
-                        children: [
+                        children: const [
                           SizedBox(height: 300),
                           Center(
                             child: Text("Aucun revenu pour cette période."),

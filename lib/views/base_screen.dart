@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:mon_budget/core/constants/app_constants.dart';
+import 'package:mon_budget/views/budgets/budget_list_screen.dart';
 import 'package:mon_budget/views/categories/category_list_screen.dart';
 import 'package:mon_budget/views/dashboard/dashboard_screen.dart';
 import 'package:mon_budget/views/expenses/expense_list_screen.dart';
-import 'package:mon_budget/views/home_screen.dart';
 import 'package:mon_budget/views/incomes/income_list_screen.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _BaseScreenState extends State<BaseScreen> {
     DashboardScreen(),
     CategoryListScreen(),
     ExpenseListScreen(),
-    HomeScreen(),
+    BudgetListScreen(),
     IncomeListScreen(),
   ];
 

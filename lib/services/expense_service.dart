@@ -6,7 +6,7 @@ class ExpenseService extends BaseService {
 
   List<Expense> get expenses => _expenses;
 
-  // Récupérer toutes les dépenses
+  // Fetch all expenses
   Future<void> fetchExpenses() async {
     setIsLoading(true);
 
@@ -20,14 +20,14 @@ class ExpenseService extends BaseService {
     setIsLoading(false);
   }
 
-  // Ajouter une dépense
+  // Add an expense
   Future<void> addExpense(Expense expense) async {
     final db = await dbHelper.db;
     await db.insert('expenses', expense.toMap());
     await fetchExpenses();
   }
 
-  // Supprimer une dépense par ID
+  // Delete an expense by ID
   Future<void> deleteExpense(int id) async {
     final db = await dbHelper.db;
     await db.delete('expenses', where: 'id = ?', whereArgs: [id]);
@@ -35,7 +35,7 @@ class ExpenseService extends BaseService {
     notifyListeners();
   }
 
-  // Supprimer toutes les dépenses
+  // Delete all expenses
   Future<void> clearExpenses() async {
     final db = await dbHelper.db;
     await db.delete('expenses');

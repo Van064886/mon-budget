@@ -32,7 +32,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     super.initState();
     _dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-    // Précharger les catégories si nécessaire
+    // Load categories if necessary
     final categoryService = Provider.of<CategoryService>(
       context,
       listen: false,
@@ -115,7 +115,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Catégorie
+              // Category
               DropdownButtonFormField<int>(
                 value: _selectedCategoryId,
                 decoration: const InputDecoration(
@@ -172,7 +172,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Note (optionnelle)
+              // Note
               TextFormField(
                 controller: _noteController,
                 maxLines: 2,

@@ -18,11 +18,9 @@ class DashboardHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // SECTION 1: Bienvenue + notifications
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Container A: User
             Row(
               children: [
                 const CircleAvatar(
@@ -51,25 +49,20 @@ class DashboardHeader extends StatelessWidget {
               ],
             ),
 
-            // Container B: Notifications
             IconButton(
               icon: const HeroIcon(
                 HeroIcons.bell,
                 style: HeroIconStyle.outline,
               ),
-              onPressed: () {
-                // Notifications
-              },
+              onPressed: () {},
             ),
           ],
         ),
         const SizedBox(height: 24),
 
-        // SECTION 2: Solde total + bouton voir plus
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Container A: Solde
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -89,11 +82,8 @@ class DashboardHeader extends StatelessWidget {
               ],
             ),
 
-            // Container B: Bouton Voir plus
             TextButton(
-              onPressed: () {
-                // Voir plus action
-              },
+              onPressed: () {},
               child: const Text(
                 "Voir plus",
                 style: TextStyle(color: Colors.blue),
@@ -103,7 +93,6 @@ class DashboardHeader extends StatelessWidget {
         ),
         const SizedBox(height: 24),
 
-        // SECTION 3: Total revenus & dépenses
         Row(
           children: [
             Expanded(
